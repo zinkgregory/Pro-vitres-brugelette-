@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pro-Vitres-Brugelette | Nettoyage de vitres</title>
+<style>
+:root{--blue:#0b5ed7;--dark:#10233d;--light:#f4f8fc;--green:#198754}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;color:var(--dark);background:var(--light)}
+header{background:linear-gradient(135deg,#0b5ed7,#063b89);color:white;padding:42px 20px;text-align:center}
+header h1{font-size:42px;margin:0 0 10px} header p{font-size:19px;margin:0}
+.container{max-width:1000px;margin:auto;padding:25px 18px}
+.card{background:white;border-radius:18px;padding:25px;margin:20px 0;box-shadow:0 5px 20px #00000012}
+h2{margin-top:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+label{font-weight:bold;display:block;margin-bottom:7px} input,select,textarea{width:100%;padding:12px;border:1px solid #ccd6e0;border-radius:10px;font-size:16px}
+input[type=number]{max-width:180px}.price{font-size:34px;font-weight:bold;color:var(--green);text-align:center;padding:15px}
+.schedule{display:grid;grid-template-columns:1fr 1fr;gap:15px}.slot{border:2px solid #d8e1ec;border-radius:12px;padding:16px}.slot strong{display:block;margin-bottom:7px}
+button{background:var(--blue);color:white;border:0;padding:14px 20px;border-radius:10px;font-size:17px;font-weight:bold;cursor:pointer}
+button:hover{filter:brightness(.93)} .secondary{background:#198754}
+.notice{background:#eaf3ff;padding:14px;border-radius:10px;margin:12px 0}
+.small{font-size:13px;color:#5d6b7a}
+#preview{max-width:100%;max-height:260px;border-radius:12px;margin-top:10px;display:none}
+footer{text-align:center;padding:25px;color:#607080}
+@media(max-width:700px){header h1{font-size:31px}.grid,.schedule{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🪟 Pro-Vitres-Brugelette</h1>
+  <p>Nettoyage de vitres à domicile • Réservation en ligne</p>
+</header>
+
+<main class="container">
+<section class="card">
+<h2>📅 Mes horaires</h2>
+<div class="notice">
+  <b>Une semaine sur deux :</b><br>
+  Semaine A : <b>08h00 → 11h00</b><br>
+  Semaine B : <b>15h00 → 18h00</b>
+</div>
+<p class="small">Le site alterne automatiquement les semaines. Le propriétaire peut modifier le réglage dans le code si nécessaire.</p>
+</section>
+
+<section class="card">
+<h2>💶 Calculez votre estimation</h2>
+
+<label for="customerType">Vous êtes :</label>
+<select id="customerType" onchange="switchType()" style="margin-bottom:18px">
+  <option value="particulier">🏠 Particulier</option>
+  <option value="professionnel">🏢 Professionnel</option>
+</select>
+
+<div id="particulierBox">
+  <h3>🏠 Nettoyage chez un particulier</h3>
+  <p class="small">Pour chaque type de vitre, choisissez : extérieur, intérieur, ou les deux.</p>
+
+  <div class="grid">
+    <div>
+      <label>Fenêtre classique — 3 € par face</label>
+      <select class="serviceSelect" data-price="3">
+        <option value="0">Ne pas nettoyer</option>
+        <option value="1">Extérieur seulement — 3 €</option>
+        <option value="1">Intérieur seulement — 3 €</option>
+        <option value="2">Intérieur + extérieur — 6 €</option>
+      </select>
+      <label style="margin-top:8px">Quantité</label>
+      <input class="qty" type="number" min="0" value="0">
+    </div>
+
+    <div>
+      <label>Grande fenêtre — 4 € par face</label>
+      <select class="serviceSelect" data-price="4">
+        <option value="0">Ne pas nettoyer</option>
+        <option value="1">Extérieur seulement — 4 €</option>
+        <option value="1">Intérieur seulement — 4 €</option>
+        <option value="2">Intérieur + extérieur — 8 €</option>
+      </select>
+      <label style="margin-top:8px">Quantité</label>
+      <input class="qty" type="number" min="0" value="0">
+    </div>
+
+    <div>
+      <label>Porte vitrée — 5 € par face</label>
+      <select class="serviceSelect" data-price="5">
+        <option value="0">Ne pas nettoyer</option>
+        <option value="1">Extérieur seulement — 5 €</option>
+        <option value="1">Intérieur seulement — 5 €</option>
+        <option value="2">Intérieur + extérieur — 10 €</option>
+      </select>
+      <label style="margin-top:8px">Quantité</label>
+      <input class="qty" type="number" min="0" value="0">
+    </div>
+
+    <div>
+      <label>Baie vitrée — 7 € par face</label>
+      <select class="serviceSelect" data-price="7">
+        <option value="0">Ne pas nettoyer</option>
+        <option value="1">Extérieur seulement — 7 €</option>
+        <option value="1">Intérieur seulement — 7 €</option>
+        <option value="2">Intérieur + extérieur — 14 €</option>
+      </select>
+      <label style="margin-top:8px">Quantité</label>
+      <input class="qty" type="number" min="0" value="0">
+    </div>
+
+    <div>
+      <label>Velux — 5 € par face</label>
+      <select class="serviceSelect" data-price="5">
+        <option value="0">Ne pas nettoyer</option>
+        <option value="1">Extérieur seulement — 5 €</option>
+        <option value="1">Intérieur seulement — 5 €</option>
+        <option value="2">Intérieur + extérieur — 10 €</option>
+      </select>
+      <label style="margin-top:8px">Quantité</label>
+      <input class="qty" type="number" min="0" value="0">
+    </div>
+  </div>
+</div>
+
+<div id="proBox" style="display:none">
+  <h3>🏢 Nettoyage professionnel</h3>
+  <div class="grid">
+    <div>
+      <label>Petit commerce — à partir de 30 €</label>
+      <input id="smallShop" type="number" min="0" value="0">
+    </div>
+    <div>
+      <label>Vitrine moyenne — à partir de 40 €</label>
+      <input id="mediumShop" type="number" min="0" value="0">
+    </div>
+    <div>
+      <label>Grande vitrine — à partir de 60 €</label>
+      <input id="largeShop" type="number" min="0" value="0">
+    </div>
+  </div>
+  <div class="notice">Bureaux, vérandas, grandes surfaces vitrées et vitres difficiles d'accès : <b>sur devis</b>.</div>
+</div>
+
+<div class="price">Estimation : <span id="total">0,00 €</span></div>
+<div class="notice">📸 <b>Envoyez une photo de vos vitres</b> pour permettre à Pro-Vitres-Brugelette de vérifier l'estimation. Le prix final peut être confirmé après visualisation.</div>
+<label for="photo">Photo des vitres</label>
+<input id="photo" type="file" accept="image/*">
+<img id="preview" alt="Aperçu de la photo">
+<p class="small">Minimum de déplacement conseillé : 30 €. Pour les chantiers particuliers ou professionnels complexes, le prix est confirmé après vérification.</p>
+</section>
+
+<section class="card">
+<h2>🗓️ Réserver un passage</h2>
+<div class="grid">
+  <div>
+    <label for="date">Date souhaitée</label>
+    <input id="date" type="date">
+  </div>
+  <div>
+    <label for="time">Créneau</label>
+    <select id="time"></select>
+  </div>
+</div>
+<p id="weekInfo" class="notice"></p>
+</section>
+
+<section class="card">
+<h2>👤 Vos coordonnées</h2>
+<div class="grid">
+  <div><label>Nom</label><input id="name" required></div>
+  <div><label>Téléphone</label><input id="phone" type="tel" required></div>
+  <div><label>Email</label><input id="email" type="email"></div>
+  <div><label>Adresse</label><input id="address" required></div>
+</div>
+<label style="margin-top:15px">Message (facultatif)</label>
+<textarea id="message" rows="4" placeholder="Informations supplémentaires..."></textarea>
+<br><br>
+<button class="secondary" onclick="reserve()">📩 Envoyer ma demande de réservation</button>
+<p id="result"></p>
+</section>
+</main>
+
+<footer>Pro-Vitres-Brugelette • Nettoyage de vitres à domicile</footer>
+
+<script>
+// TARIF ACTUEL : 3 € extérieur + 3 € intérieur par fenêtre classique.
+const PRICE_EXT = 3;
+const PRICE_INT = 3;
+
+// Semaine courante = semaine A (08h-11h). Modifier à false si besoin.
+const CURRENT_WEEK_IS_MORNING = true;
+
+const prices = {
+  classic: 6,
+  large: 8,
+  door: 10,
+  bay: 14,
+  velux: 10,
+  smallShop: 30,
+  mediumShop: 40,
+  largeShop: 60
+};
+
+function switchType(){
+  const pro = document.getElementById('customerType').value === 'professionnel';
+  document.getElementById('particulierBox').style.display = pro ? 'none' : 'block';
+  document.getElementById('proBox').style.display = pro ? 'block' : 'none';
+  calc();
+}
+
+function calc(){
+  const type = document.getElementById('customerType').value;
+  let sum = 0;
+  if(type === 'particulier'){
+    document.querySelectorAll('#particulierBox .serviceSelect').forEach((select)=>{
+      const qty = Number(select.parentElement.querySelector('.qty').value)||0;
+      sum += Number(select.value) * Number(select.dataset.price) * qty;
+    });
+  } else {
+    ['smallShop','mediumShop','largeShop'].forEach(id=>{
+      sum += (Number(document.getElementById(id).value)||0) * prices[id];
+    });
+  }
+  if(sum > 0 && sum < 30) sum = 30;
+  document.getElementById('total').textContent =
+    sum.toFixed(2).replace('.',',') + ' €';
+}
+
+document.querySelectorAll('#particulierBox input, #particulierBox select, #proBox input').forEach(el=>{
+  el.addEventListener('input',calc);
+  el.addEventListener('change',calc);
+});
+
+document.getElementById('photo').addEventListener('change', e=>{
+  const file=e.target.files[0], img=document.getElementById('preview');
+  if(file){img.src=URL.createObjectURL(file);img.style.display='block';}
+});
+
+function isoWeek(date){
+  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+  const day=d.getUTCDay()||7; d.setUTCDate(d.getUTCDate()+4-day);
+  const yearStart=new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  return Math.ceil((((d-yearStart)/86400000)+1)/7);
+}
+function isMorning(date){
+  const diff=isoWeek(date)-isoWeek(new Date());
+  return ((CURRENT_WEEK_IS_MORNING ? 0 : 1) + diff) % 2 === 0;
+}
+function refreshSlots(){
+  const dateVal=document.getElementById('date').value;
+  const select=document.getElementById('time');
+  select.innerHTML='';
+  if(!dateVal)return;
+  const d=new Date(dateVal+'T12:00:00');
+  const morning=isMorning(d);
+  const times=morning ? ['08:00','08:30','09:00','09:30','10:00','10:30'] : ['15:00','15:30','16:00','16:30','17:00','17:30'];
+  times.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;select.appendChild(o)});
+  document.getElementById('weekInfo').innerHTML =
+    'Pour cette date, le créneau disponible est <b>'+(morning?'08h00 → 11h00':'15h00 → 18h00')+'</b>.';
+}
+document.getElementById('date').addEventListener('change',refreshSlots);
+
+const today=new Date();
+document.getElementById('date').min=today.toISOString().split('T')[0];
+
+function reserve(){
+  const name=document.getElementById('name').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const address=document.getElementById('address').value.trim();
+  const date=document.getElementById('date').value;
+  if(!name||!phone||!address||!date){
+    document.getElementById('result').innerHTML='<span style="color:#b02a37">Merci de compléter le nom, téléphone, adresse et date.</span>'; return;
+  }
+  const type = document.getElementById('customerType').value;
+  const msg=`Bonjour Pro-Vitres-Brugelette,%0A%0AJe souhaite réserver un nettoyage de vitres.%0A%0AType : ${encodeURIComponent(type)}%0ANom : ${encodeURIComponent(name)}%0ATéléphone : ${encodeURIComponent(phone)}%0AAdresse : ${encodeURIComponent(address)}%0ADate : ${encodeURIComponent(date)}%0ACréneau : ${encodeURIComponent(document.getElementById('time').value)}%0AEstimation : ${encodeURIComponent(document.getElementById('total').textContent)}%0A%0A${encodeURIComponent(document.getElementById('message').value)}`;
+  // Remplacer l'adresse ci-dessous par le numéro WhatsApp professionnel.
+  window.location.href='mailto:CONTACT@EXEMPLE.BE?subject=Demande%20de%20réservation%20Pro-Vitres-Brugelette&body='+msg;
+}
+</script>
+</body>
+</html>
