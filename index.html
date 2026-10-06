@@ -349,60 +349,81 @@ reader.readAsDataURL(file);
 });
 });
 
-document.getElementById("requestForm").addEventListener("submit",async function(e){
+const supabaseClient = window.supabase.createClient(
+  "https://lrgdjzjcvhtwmwhyabah.supabase.co",
+  "sb_publishable_SdzKFoCGT2AshKhgGkzgaw_l9Ha1i7c"
+);
 
-e.preventDefault();
+document.getElementById("requestForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const submitBtn = this.querySelector('button[type="submit"]');
+  const msg = document.getElementById("requestMessage");
+  
+  submitBtn.disabled = true;
+  submitBtn.textContent = "⏳ Envoi en cours...";
+  msg.style.display = "none";
 
-const files=Array.from(document.getElementById("photos").files);
+  try {
+    const files = Array.from(document.getElementById("photos").files);
+    const uploadedPhotos = [];
 
-const photos=[];
+    for (const file of files) {
+      if (file.size > 5 * 1024 * 1024) continue;
+      const ext = file.name.split('.').pop() || 'jpg';
+      const path = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
 
-for(const file of files){
-if(file.size>1500000){
-continue;
-}
+      const { error: uploadError } = await supabaseClient.storage
+        .from("photos-demandes")
+        .upload(path, file);
 
-const data=await fileToDataURL(file);
-photos.push({
-name:file.name,
-data
-});
-}
+      if (!uploadError) {
+        uploadedPhotos.push(path);
+      }
+    }
 
-const request={
-id:Date.now(),
-createdAt:new Date().toISOString(),
-status:"nouvelle",
-name:document.getElementById("name").value.trim(),
-phone:document.getElementById("phone").value.trim(),
-email:document.getElementById("email").value.trim(),
-address:document.getElementById("address").value.trim(),
-customerType:document.getElementById("customerType").value,
-date:document.getElementById("date").value,
-time:document.getElementById("time").value,
-message:document.getElementById("message").value.trim(),
-photos,
-quote:null
-};
+    const typeClientRaw = (document.getElementById("customerType").value || "particulier").toLowerCase();
+    const typeClient = typeClientRaw === "professionnel" ? "professionnel" : "particulier";
+    const dateVal = document.getElementById("date").value || null;
+    const timeVal = document.getElementById("time").value || "";
+    let userMsg = document.getElementById("message").value.trim();
+    if (timeVal) {
+      userMsg = userMsg ? `${userMsg} (Créneau souhaité: ${timeVal})` : `Créneau souhaité: ${timeVal}`;
+    }
 
-requests.unshift(request);
+    const { error: dbError } = await supabaseClient
+      .from("demandes")
+      .insert([
+        {
+          nom: document.getElementById("name").value.trim(),
+          telephone: document.getElementById("phone").value.trim() || null,
+          email: document.getElementById("email").value.trim() || null,
+          adresse: document.getElementById("address").value.trim() || null,
+          type_client: typeClient,
+          message: userMsg || null,
+          date_souhaitee: dateVal,
+          photos: uploadedPhotos,
+          statut: "nouvelle"
+        }
+      ]);
 
-try{
-localStorage.setItem("provitres_requests",JSON.stringify(requests));
-}catch(error){
-request.photos=[];
-localStorage.setItem("provitres_requests",JSON.stringify(requests));
-}
+    if (dbError) throw dbError;
 
-const msg=document.getElementById("requestMessage");
-msg.textContent="✅ Votre demande a bien été enregistrée.";
-msg.className="message success";
-msg.style.display="block";
+    msg.textContent = "✅ Votre demande a bien été envoyée à l'équipe PROVITRES.";
+    msg.className = "message success";
+    msg.style.display = "block";
 
-this.reset();
-document.getElementById("photoPreview").innerHTML="";
+    this.reset();
+    document.getElementById("photoPreview").innerHTML = "";
 
-renderRequests();
+  } catch (err) {
+    console.error(err);
+    msg.textContent = "❌ Une erreur est survenue lors de l'envoi. Veuillez réessayer ou nous contacter par téléphone.";
+    msg.className = "message error";
+    msg.style.display = "block";
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "📩 Enregistrer ma demande";
+  }
 });
 
 function fileToDataURL(file){
