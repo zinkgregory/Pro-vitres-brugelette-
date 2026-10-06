@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROVITRES — Nettoyage de vitres</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
+header{background:#0b5ed7;color:white;padding:28px 18px;text-align:center}
+header h1{margin:0 0 8px;font-size:30px}
+header p{margin:0;opacity:.9}
+nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;background:white;padding:12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px #0001}
+nav button{border:0;background:#e9f1ff;color:#084298;padding:11px 15px;border-radius:9px;cursor:pointer;font-weight:bold}
+nav button:hover{background:#cfe2ff}
+main{max-width:1000px;margin:auto;padding:20px}
+section{display:none}
+section.active{display:block}
+.card{background:white;border-radius:15px;padding:20px;margin-bottom:18px;box-shadow:0 3px 15px #00000010}
+h2{margin-top:0;color:#084298}
+h3{color:#084298}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px}
+label{display:block;font-weight:bold;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd4df;border-radius:8px;font-size:16px}
+textarea{min-height:100px;resize:vertical}
+button.primary{background:#0b5ed7;color:white;border:0;padding:13px 18px;border-radius:9px;font-weight:bold;cursor:pointer}
+button.danger{background:#dc3545;color:white;border:0;padding:9px 12px;border-radius:7px;cursor:pointer}
+button.secondary{background:#6c757d;color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer}
+.total{font-size:25px;font-weight:bold;color:#0b5ed7;margin-top:15px}
+.message{padding:12px;border-radius:8px;margin-top:12px;display:none}
+.success{background:#d1e7dd;color:#0f5132}
+.error{background:#f8d7da;color:#842029}
+.line{display:grid;grid-template-columns:2fr 90px 110px 110px 45px;gap:8px;align-items:end;margin-bottom:10px}
+@media(max-width:650px){.line{grid-template-columns:1fr 1fr}.line button{grid-column:auto}}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:10px;border-bottom:1px solid #e1e5ea}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#e9ecef;font-size:13px;font-weight:bold}
+.status-nouvelle{background:#fff3cd;color:#664d03}
+.status-devis{background:#cff4fc;color:#055160}
+.status-acceptee{background:#d1e7dd;color:#0f5132}
+.status-refusee{background:#f8d7da;color:#842029}
+.request{border:1px solid #dbe2ea;border-radius:12px;padding:15px;margin-bottom:12px}
+.request-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.photo-preview{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.photo-preview img{width:120px;height:90px;object-fit:cover;border-radius:8px}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🪟 PROVITRES</h1>
+<p>Nettoyage de vitres à domicile • Brugelette et alentours</p>
+</header>
+
+<nav>
+<button onclick="showSection('accueil')">Accueil</button>
+<button onclick="showSection('demande')">Demander un devis</button>
+<button onclick="showSection('calculateur')">Calculateur de devis</button>
+<button onclick="showSection('dashboard')">Mes demandes</button>
+</nav>
+
+<main>
+
+<section id="accueil" class="active">
+<div class="card">
+<h2>Nettoyage de vitres professionnel</h2>
+<p>Un service simple, clair et adapté aux particuliers comme aux professionnels.</p>
+<div class="grid">
+<div>
+<h3>🏠 Particuliers</h3>
+<p>Fenêtres, portes vitrées, baies vitrées, Velux...</p>
+</div>
+<div>
+<h3>🏢 Professionnels</h3>
+<p>Vitrines, commerces et locaux professionnels.</p>
+</div>
+<div>
+<h3>📸 Devis avec photos</h3>
+<p>Ajoutez des photos pour permettre une estimation plus précise.</p>
+</div>
+</div>
+<br>
+<button class="primary" onclick="showSection('demande')">📩 Demander un devis</button>
+</div>
+
+<div class="card">
+<h2>📅 Horaires</h2>
+<p><b>Semaine A :</b> 08h00 → 11h00</p>
+<p><b>Semaine B :</b> 15h00 → 18h00</p>
+<p>Les horaires alternent automatiquement selon la semaine.</p>
+</div>
+</section>
+
+<section id="demande">
+<div class="card">
+<h2>📩 Demande de devis</h2>
+
+<form id="requestForm">
+
+<div class="grid">
+<div>
+<label>Nom *</label>
+<input id="name" required>
+</div>
+
+<div>
+<label>Téléphone *</label>
+<input id="phone" required>
+</div>
+
+<div>
+<label>Email *</label>
+<input id="email" type="email" required>
+</div>
+
+<div>
+<label>Adresse *</label>
+<input id="address" required>
+</div>
+</div>
+
+<label>Type de client</label>
+<select id="customerType">
+<option value="Particulier">Particulier</option>
+<option value="Professionnel">Professionnel</option>
+</select>
+
+<div class="grid">
+<div>
+<label>Date souhaitée</label>
+<input id="date" type="date">
+</div>
+
+<div>
+<label>Créneau souhaité</label>
+<select id="time">
+<option>08:00</option>
+<option>08:30</option>
+<option>09:00</option>
+<option>09:30</option>
+<option>10:00</option>
+<option>10:30</option>
+<option>15:00</option>
+<option>15:30</option>
+<option>16:00</option>
+<option>16:30</option>
+<option>17:00</option>
+<option>17:30</option>
+</select>
+</div>
+</div>
+
+<label>Photos</label>
+<input id="photos" type="file" accept="image/*" multiple>
+<div id="photoPreview" class="photo-preview"></div>
+
+<label>Message</label>
+<textarea id="message" placeholder="Décrivez votre demande..."></textarea>
+
+<button class="primary" type="submit">📩 Enregistrer ma demande</button>
+
+<div id="requestMessage" class="message"></div>
+
+</form>
+</div>
+</section>
+
+<section id="calculateur">
+<div class="card">
+<h2>💶 Calculateur de devis</h2>
+
+<div id="quoteLines"></div>
+
+<button class="secondary" onclick="addLine()">+ Ajouter une prestation</button>
+
+<div class="grid" style="margin-top:20px">
+<div>
+<label>Réduction / majoration (%)</label>
+<input id="adjustment" type="number" value="0" step="0.01" oninput="calculateQuote()">
+</div>
+<div>
+<label>Minimum déplacement (€)</label>
+<input id="minimum" type="number" value="30" step="0.01" oninput="calculateQuote()">
+</div>
+</div>
+
+<p>Sous-total : <b id="subtotal">0,00 €</b></p>
+<p>Ajustement : <b id="adjustmentAmount">0,00 €</b></p>
+<p>Déplacement minimum : <b id="travelAmount">0,00 €</b></p>
+<div class="total">Total : <span id="grandTotal">0,00 €</span></div>
+
+<br>
+
+<button class="primary" onclick="saveQuote()">💾 Enregistrer ce devis</button>
+<button class="secondary" onclick="resetQuote()">Réinitialiser</button>
+
+<div id="quoteMessage" class="message"></div>
+</div>
+</section>
+
+<section id="dashboard">
+<div class="card">
+<h2>📋 Mes demandes</h2>
+
+<p>
+Les demandes enregistrées sur <b>cet appareil</b> apparaissent ici.
+</p>
+
+<button class="danger" onclick="clearAllRequests()">Supprimer tout l'historique</button>
+
+<div id="requestsList" style="margin-top:20px"></div>
+</div>
+</section>
+
+</main>
+
+<script>
+let requests = JSON.parse(localStorage.getItem("provitres_requests") || "[]");
+let quoteLines = [];
+
+function showSection(id){
+document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+if(id==="dashboard") renderRequests();
+}
+
+function euro(value){
+return Number(value || 0).toLocaleString("fr-BE",{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+})+" €";
+}
+
+function addLine(data={}){
+const line={
+name:data.name||"",
+qty:data.qty||1,
+price:data.price||0
+};
+
+quoteLines.push(line);
+renderQuote();
+}
+
+function renderQuote(){
+const container=document.getElementById("quoteLines");
+
+container.innerHTML="";
+
+quoteLines.forEach((line,index)=>{
+const div=document.createElement("div");
+div.className="line";
+
+div.innerHTML=`
+<div>
+<label>Prestation</label>
+<input value="${escapeHtml(line.name)}" oninput="quoteLines[${index}].name=this.value;calculateQuote()">
+</div>
+
+<div>
+<label>Qté</label>
+<input type="number" min="0" step="0.01" value="${line.qty}" oninput="quoteLines[${index}].qty=this.value;calculateQuote()">
+</div>
+
+<div>
+<label>Prix unité</label>
+<input type="number" min="0" step="0.01" value="${line.price}" oninput="quoteLines[${index}].price=this.value;calculateQuote()">
+</div>
+
+<div>
+<label>Total</label>
+<input value="${euro(line.qty*line.price)}" disabled>
+</div>
+
+<button class="danger" onclick="quoteLines.splice(${index},1);renderQuote();calculateQuote()">×</button>
+`;
+
+container.appendChild(div);
+});
+
+calculateQuote();
+}
+
+function calculateQuote(){
+
+let subtotal=quoteLines.reduce((sum,line)=>{
+return sum+(Number(line.qty)||0)*(Number(line.price)||0);
+},0);
+
+let adjustment=Number(document.getElementById("adjustment").value)||0;
+let adjustmentAmount=subtotal*adjustment/100;
+
+let afterAdjustment=subtotal+adjustmentAmount;
+
+let minimum=Number(document.getElementById("minimum").value)||0;
+let travel=afterAdjustment>0 && afterAdjustment<minimum ? minimum-afterAdjustment : 0;
+
+let total=afterAdjustment+travel;
+
+document.getElementById("subtotal").textContent=euro(subtotal);
+document.getElementById("adjustmentAmount").textContent=euro(adjustmentAmount);
+document.getElementById("travelAmount").textContent=euro(travel);
+document.getElementById("grandTotal").textContent=euro(total);
+}
+
+function resetQuote(){
+quoteLines=[];
+addLine();
+document.getElementById("adjustment").value=0;
+document.getElementById("minimum").value=30;
+calculateQuote();
+}
+
+function saveQuote(){
+
+const quote={
+id:Date.now(),
+date:new Date().toLocaleString("fr-BE"),
+lines:JSON.parse(JSON.stringify(quoteLines)),
+adjustment:Number(document.getElementById("adjustment").value)||0,
+total:document.getElementById("grandTotal").textContent
+};
+
+localStorage.setItem("provitres_last_quote",JSON.stringify(quote));
+
+const msg=document.getElementById("quoteMessage");
+msg.textContent="✅ Devis enregistré sur cet appareil.";
+msg.className="message success";
+msg.style.display="block";
+}
+
+document.getElementById("photos").addEventListener("change",function(){
+
+const preview=document.getElementById("photoPreview");
+preview.innerHTML="";
+
+Array.from(this.files).forEach(file=>{
+const reader=new FileReader();
+
+reader.onload=e=>{
+const img=document.createElement("img");
+img.src=e.target.result;
+img.alt=file.name;
+preview.appendChild(img);
+};
+
+reader.readAsDataURL(file);
+});
+});
+
+document.getElementById("requestForm").addEventListener("submit",async function(e){
+
+e.preventDefault();
+
+const files=Array.from(document.getElementById("photos").files);
+
+const photos=[];
+
+for(const file of files){
+if(file.size>1500000){
+continue;
+}
+
+const data=await fileToDataURL(file);
+photos.push({
+name:file.name,
+data
+});
+}
+
+const request={
+id:Date.now(),
+createdAt:new Date().toISOString(),
+status:"nouvelle",
+name:document.getElementById("name").value.trim(),
+phone:document.getElementById("phone").value.trim(),
+email:document.getElementById("email").value.trim(),
+address:document.getElementById("address").value.trim(),
+customerType:document.getElementById("customerType").value,
+date:document.getElementById("date").value,
+time:document.getElementById("time").value,
+message:document.getElementById("message").value.trim(),
+photos,
+quote:null
+};
+
+requests.unshift(request);
+
+try{
+localStorage.setItem("provitres_requests",JSON.stringify(requests));
+}catch(error){
+request.photos=[];
+localStorage.setItem("provitres_requests",JSON.stringify(requests));
+}
+
+const msg=document.getElementById("requestMessage");
+msg.textContent="✅ Votre demande a bien été enregistrée.";
+msg.className="message success";
+msg.style.display="block";
+
+this.reset();
+document.getElementById("photoPreview").innerHTML="";
+
+renderRequests();
+});
+
+function fileToDataURL(file){
+return new Promise((resolve,reject)=>{
+const reader=new FileReader();
+reader.onload=()=>resolve(reader.result);
+reader.onerror=reject;
+reader.readAsDataURL(file);
+});
+}
+
+function renderRequests(){
+
+const container=document.getElementById("requestsList");
+
+if(!requests.length){
+container.innerHTML="<p>Aucune demande enregistrée.</p>";
+return;
+}
+
+container.innerHTML=requests.map((r,index)=>`
+
+<div class="request">
+
+<div class="request-head">
+<strong>${escapeHtml(r.name)}</strong>
+<span class="badge status-${r.status}">${statusLabel(r.status)}</span>
+</div>
+
+<p>
+<b>Téléphone :</b> ${escapeHtml(r.phone)}<br>
+<b>Email :</b> ${escapeHtml(r.email)}<br>
+<b>Adresse :</b> ${escapeHtml(r.address)}
+</p>
+
+<p>
+<b>Type :</b> ${escapeHtml(r.customerType)}<br>
+<b>Date souhaitée :</b> ${r.date||"Non précisée"}<br>
+<b>Créneau :</b> ${r.time||"Non précisé"}
+</p>
+
+${r.message ? `<p><b>Message :</b><br>${escapeHtml(r.message)}</p>` : ""}
+
+${r.photos && r.photos.length ? `
+<div class="photo-preview">
+${r.photos.map(p=>`<img src="${p.data}" alt="${escapeHtml(p.name)}">`).join("")}
+</div>
+` : ""}
+
+<hr>
+
+<label>Statut</label>
+<select onchange="changeStatus(${index},this.value)">
+<option value="nouvelle" ${r.status==="nouvelle"?"selected":""}>Nouvelle</option>
+<option value="devis" ${r.status==="devis"?"selected":""}>Devis envoyé</option>
+<option value="acceptee" ${r.status==="acceptee"?"selected":""}>Acceptée</option>
+<option value="refusee" ${r.status==="refusee"?"selected":""}>Refusée</option>
+</select>
+
+<br><br>
+
+<button class="danger" onclick="deleteRequest(${index})">Supprimer</button>
+
+</div>
+
+`).join("");
+}
+
+function changeStatus(index,status){
+requests[index].status=status;
+localStorage.setItem("provitres_requests",JSON.stringify(requests));
+renderRequests();
+}
+
+function deleteRequest(index){
+
+if(!confirm("Supprimer cette demande ?")) return;
+
+requests.splice(index,1);
+localStorage.setItem("provitres_requests",JSON.stringify(requests));
+renderRequests();
+}
+
+function clearAllRequests(){
+
+if(!confirm("Supprimer tout l'historique ?")) return;
+
+requests=[];
+localStorage.removeItem("provitres_requests");
+renderRequests();
+}
+
+function statusLabel(status){
+
+const labels={
+nouvelle:"Nouvelle",
+devis:"Devis envoyé",
+acceptee:"Acceptée",
+refusee:"Refusée"
+};
+
+return labels[status]||status;
+}
+
+function escapeHtml(value){
+
+return String(value??"")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+addLine({
+name:"Prestation",
+qty:1,
+price:0
+});
+
+const today=new Date();
+const yyyy=today.getFullYear();
+const mm=String(today.getMonth()+1).padStart(2,"0");
+const dd=String(today.getDate()).padStart(2,"0");
+
+document.getElementById("date").min=`${yyyy}-${mm}-${dd}`;
+
+renderRequests();
+</script>
+
+</body>
+</html>
